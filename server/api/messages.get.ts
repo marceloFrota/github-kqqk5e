@@ -9,8 +9,13 @@ export default defineEventHandler(async (event) => {
     const query = getQuery(event);
     //const messages = await getDocs(messagesRef);
     //const messages = await useCollection(collection(db, 'messages'));
-    const messages = await getDocs(messagesRef);
-
+    const snapshot = await getDocs(messagesRef);
+    const messages = Array.from(snapshot.docs).map((doc) => {
+      return {
+        ...doc.data(),
+        id: doc.id,
+      };
+    });
     //const messages = [{ id: 1, name: 'nome1' }];
 
     return messages;
