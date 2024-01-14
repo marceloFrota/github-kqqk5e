@@ -8,7 +8,8 @@ export default defineEventHandler(async (event) => {
   try {
     const query = getQuery(event);
     //const messages = await getDocs(messagesRef);
-    const messages = await useCollection(collection(db, 'messages'));
+    //const messages = await useCollection(collection(db, 'messages'));
+    const messages = await getDocs(messagesRef);
 
     //const messages = [{ id: 1, name: 'nome1' }];
 
