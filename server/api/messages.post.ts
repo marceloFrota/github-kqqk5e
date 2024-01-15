@@ -1,15 +1,24 @@
 import { getQuery, readBody } from 'h3';
 
-import { add } from '../lib/firestore';
+import { initializeApp, getApp, getApps } from 'firebase/app';
+import { useFirebaseApp, useFirestore, useCollection } from 'vuefire';
+import { collection, getDocs, addDoc } from 'firebase/firestore';
+import { app, db, messagesRef } from '../lib/firebase';
 
 export default defineEventHandler(async (event) => {
   try {
-    const query = getQuery(event);
     const body = await readBody(event);
+    if (!body.name || !body.message) {
+      return Promise.reject(new Error('Invalid post'))
+    }
 
-    const docRef = await add(query.col, body);
+    await addDoc(collection(db, 'messages'), {
+      name: body.name,
+      message: body.message,
+    });
 
-    return { result: docRef };
+
+    return body;
   } catch (error) {
     return { error: error.message };
   }
