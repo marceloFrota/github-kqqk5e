@@ -11,24 +11,15 @@
 
 <script setup>
 import { ref } from "vue";
-import { app, db, messagesRef } from '../server/lib/firebase';
-import { collection, getDocs, addDoc } from 'firebase/firestore';
-import { useFirebaseApp, useFirestore, useCollection } from 'vuefire';
 
 const message = ref({
   name: "",
   message: "",
 });
 
-
 const submitMessage = async () => {
-  console.log(message.value);
-  try {
-    const docRef = await addDoc(collection(db, "messages"), message.value);
-    console.log("Document written with ID: ", docRef.id);
-  } catch (e) {
-    console.error("Error adding document: ", e);
-  }
+  const response = await useFetch("/api/messages", { method: "POST", body: message });
+  return console.log(response);
 };
 </script>
 
