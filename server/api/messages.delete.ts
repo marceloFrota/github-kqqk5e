@@ -1,16 +1,15 @@
-import { getQuery, readBody } from 'h3';
-
-import { del } from '../lib/firestore';
+import { readBody } from "h3";
+import { db } from "../lib/firebase";
+import { collection, deleteDoc, doc } from "firebase/firestore";
 
 export default defineEventHandler(async (event) => {
   try {
-    const query = useQuery(event);
-    const body = await readBody(event);
-
-    const docRef = await del(query.col, body);
-
-    return { result: docRef };
-  } catch (error) {
+    const id = readBody(event);
+    const colRef = collection(db, "messages");
+    const docRef = doc(db, colRef, id);
+    await deleteDoc(docRef);
+    return { status: 200, body: "OK" };
+  } catch (error: any) {
     return { error: error.message };
   }
 });

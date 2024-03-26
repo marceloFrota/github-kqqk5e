@@ -1,16 +1,16 @@
-import { getQuery, readBody } from 'h3';
-
-import { add } from '../lib/firestore';
+import { readBody } from "h3";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "../lib/firebase";
 
 export default defineEventHandler(async (event) => {
   try {
-    const query = getQuery(event);
     const body = await readBody(event);
-
-    const docRef = await add(query.col, body);
-
-    return { result: docRef };
-  } catch (error) {
+    await addDoc(collection(db, "messages"), {
+      name: body.name,
+      message: body.message,
+    });
+    return { status: 200, body: "OK" };
+  } catch (error: any) {
     return { error: error.message };
   }
 });
